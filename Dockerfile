@@ -6,6 +6,8 @@ ARG BIRT_RT_SHA512=375f8022ab082909a6ddbccc70e4e23648fa91e68ea599bee343a8439e3e1
 ARG MYSQL_JDBC_URL=http://cdn.mysql.com//Downloads/Connector-J/mysql-connector-java-5.1.40.tar.gz
 ARG MYSQL_JDBC_FILE=mysql-connector-java-5.1.40.tar.gz
 ARG MYSQL_JDBC_MD5=415a375cf8a096ef0aa775a4ae36916d
+ARG POSTGRESQL_JDBC_URL=https://jdbc.postgresql.org/download/postgresql-9.4.1212.jar
+ARG POSTGRESQL_JDBC_FILE=postgresql-9.4.1212.jar
 
 ENV CLASSPATH=$CATALINA_HOME/bin/bootstrap.jar:$CATALINA_HOME/bin/tomcat-juli.jar \
   BIRT_VIEWER_HOME=$CATALINA_HOME/webapps/birt-viewer
@@ -30,7 +32,11 @@ RUN echo 'Start downloading' \
   && mv ./mysql-connector-java-5.1.40/mysql-connector-java-5.1.40-bin.jar ${BIRT_VIEWER_HOME}/WEB-INF/lib/ \
   && rm -r ./mysql-connector-java-5.1.40 \
   && rm ./mysql_jdbc.include \
-  && rm ./${MYSQL_JDBC_FILE}
+  && rm ./${MYSQL_JDBC_FILE} \
+
+  # PostgreSQL
+  && curl -o ${POSTGRESQL_JDBC_FILE} ${POSTGRESQL_JDBC_URL} \
+  && mv ./${POSTGRESQL_JDBC_FILE} ${BIRT_VIEWER_HOME}/WEB-INF/lib/
 
 # Configure
 ENV TOMCAT_USER=tomcat \
