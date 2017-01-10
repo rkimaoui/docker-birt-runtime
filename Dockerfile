@@ -45,6 +45,9 @@ ENV TOMCAT_USER=tomcat \
 RUN sed -i "s/<\/tomcat-users>/<role rolename=\"manager-gui\"\/>\n<user username=\"${TOMCAT_USER}\" password=\"${TOMCAT_PASSWORD}\" roles=\"manager-gui\"\/>\n<\/tomcat-users>/" $CATALINA_HOME/conf/tomcat-users.xml \
   # since tomcat 8.5 disallow access manager from anywhere but localhost
   && mkdir -p $CATALINA_HOME/conf/Catalina/localhost \
-  && echo '<Context privileged="true" antiResourceLocking="false" docBase="${catalina.home}/webapps/manager"><Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" /></Context>' | tee $CATALINA_HOME/conf/Catalina/localhost/manager.xml
+  && echo '<Context privileged="true" antiResourceLocking="false" docBase="${catalina.home}/webapps/manager"><Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" /></Context>' | tee $CATALINA_HOME/conf/Catalina/localhost/manager.xml \
+  && sed -i ':a;N;$!ba;s/BIRT_VIEWER_WORKING_FOLDER<\/param-name>\n\t\t<param-value>/BIRT_VIEWER_WORKING_FOLDER<\/param-name>\n\t\t<param-value>\/opt\/reports/g' ${BIRT_VIEWER_HOME}/WEB-INF/web.xml
+
+VOLUME /opt/reports
 
 CMD ["catalina.sh", "run"]
